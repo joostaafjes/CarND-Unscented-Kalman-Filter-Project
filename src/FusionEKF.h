@@ -52,9 +52,6 @@ private:
   //acceleration noise components
   float noise_ax_;
   float noise_ay_;
-
-  // state
-  Eigen::VectorXd x_;
 };
 
 #endif /* FusionEKF_H_ */

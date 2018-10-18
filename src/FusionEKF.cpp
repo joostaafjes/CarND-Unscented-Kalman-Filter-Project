@@ -57,9 +57,6 @@ FusionEKF::FusionEKF() {
   // set the acceleration noise components
   noise_ax_ = 9; // was 5
   noise_ay_ = 9; // was 5
-
-  // state
-  x_ = VectorXd(4);
 }
 
 /**
@@ -89,10 +86,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Initialize state.
       */
-      x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
-
-      // todo -> dirty
-      ekf_.x_ = x_;
+      VectorXd x = VectorXd(4);
+      x << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+      ekf_.setState(x);
     }
 
     // done initializing, no need to predict or update
@@ -126,7 +122,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       pow(dt, 3) / 2 * noise_ax_, 0, pow(dt, 2) * noise_ax_, 0,
       0, pow(dt, 3) / 2 * noise_ay_, 0, pow(dt, 2) * noise_ay_;
 
-  ekf_.Init(x_, P_lasar_, F_lasar_, H_laser_, R_laser_, Q_lasar);
+  ekf_.Init(P_lasar_, F_lasar_, H_laser_, R_laser_, Q_lasar);
 
   ekf_.Predict();
 
