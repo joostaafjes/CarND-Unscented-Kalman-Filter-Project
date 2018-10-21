@@ -18,10 +18,11 @@ public:
   Eigen::MatrixXd Q_;
 
   // measurement matrix
-  Eigen::MatrixXd H_;
+  Eigen::MatrixXd H_; // only for lidar
 
   // measurement covariance matrix
-  Eigen::MatrixXd R_;
+  Eigen::MatrixXd R_radar_;
+  Eigen::MatrixXd R_lasar_;
 
   /**
    * Constructor
@@ -45,17 +46,16 @@ public:
    * @param F_in Transition matrix
    * @param H_in Measurement matrix
    * @param R_in Measurement covariance matrix
-   * @param Q_in Process covariance matrix
    */
   void Init(Eigen::MatrixXd &P_in, Eigen::MatrixXd &F_in,
-      Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_in, Eigen::MatrixXd &Q_in);
+      Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_radar_in, Eigen::MatrixXd &R_lasar_in_);
 
   /**
    * Prediction Predicts the state and the state covariance
    * using the process model
    * @param delta_T Time between k and k+1 in s
    */
-  void Predict();
+  void Predict(float dt);
 
   /**
    * Updates the state by using standard Kalman Filter equations
@@ -68,6 +68,9 @@ public:
    * @param z The measurement at k+1
    */
   void UpdateEKF(const Eigen::VectorXd &z);
+ private:
+  Eigen::VectorXd ConvertCartesianToPolar(Eigen::VectorXd x);
+  void NormalizeAngle(double* pangle);
 
 };
 

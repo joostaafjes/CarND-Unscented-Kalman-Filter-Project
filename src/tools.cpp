@@ -67,6 +67,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   Hj << px / sqrt_sum_px2_py2, py / sqrt_sum_px2_py2, 0, 0,
       - py / sum_px2_py2, px / sum_px2_py2, 0, 0,
       py * (vx * py - vy * px) / sum_px2_py2_3_div_2, px * (vy * px - vx * py) / sum_px2_py2_3_div_2,
+//      py * (vx * py - vy * px) / sum_px2_py2_3_div_2, px * (vx * py - vy * px) / sum_px2_py2_3_div_2,
       px / sqrt_sum_px2_py2, py / sqrt_sum_px2_py2;
 
   return Hj;
