@@ -95,18 +95,12 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
 //  double phi = atan(p_y / p_x);
   double phi = atan2(p_y, p_x);
-  std::cout << "phi:" << phi  << std::endl;
-
-//  double phi = atan2(p_y, p_x);
-//  double angle3 = atan2(p_x, p_y);
-//  while (phi > M_PI) {
-//    std::cout << "phi updated(-):" << phi << std::endl;
-//    phi -= 2*M_PI;
-//  }
-//  while (phi < -M_PI) {
-//    std::cout << "phi updated(+):" << phi << std::endl;
-//    phi += 2*M_PI;
-//  }
+  double phi2 = atan(p_y / p_x);
+  if (int(phi*1000) != int(phi2*1000)) {
+    std::cout << "phi(2):" << phi << "-" << phi2 << std::endl;
+  } else {
+    std::cout << "phi:" << phi << std::endl;
+  }
 
   VectorXd z_pred = VectorXd(3);
   z_pred << rho, phi, (p_x * vx + p_y * vy) / rho;
@@ -115,14 +109,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   std::cout << "z_pred:" << z_pred << std::endl;
 
   VectorXd z2 = z;
-//  while (z2(1) > M_PI) {
-//    std::cout << "z(1) updated(-):" << z(1) << std::endl;
-//    z2(1) -= 2*M_PI;
-//  }
-//  while (z2(1) < -M_PI) {
-//    std::cout << "z(1) updated(+):" << z(1) << std::endl;
-//    z2(1) += 2*M_PI;
-//  }
 
   VectorXd y = z2 - z_pred;
   std::cout << "y:" << y << std::endl;
@@ -153,10 +139,6 @@ Eigen::VectorXd KalmanFilter::ConvertCartesianToPolar(Eigen::VectorXd x) {
   double vy = x(3);
 
   double phi = atan(p_y / p_x);
-
-//  double phi = atan2(p_y, p_x);
-//  double angle3 = atan2(p_x, p_y);
-//  NormalizeAngle(&phi);
 
   VectorXd z_pred = VectorXd(3);
   z_pred << rho, phi, (p_x * vx + p_y * vy) / rho;
