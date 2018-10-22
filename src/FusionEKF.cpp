@@ -37,10 +37,10 @@ FusionEKF::FusionEKF() {
   */
   // state covariance matrix P
   P_lasar_ = MatrixXd(4, 4);
-  P_lasar_ << 1, 1, 1, 1,
-      1, 1, 1, 1,
-      1, 1, 1, 1,
-      1, 1, 1, 1;
+  P_lasar_ << 1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1000, 0,
+      0, 0, 0, 1000;
 
   // measurement matrix
   H_laser_ << 1, 0, 0, 0,
@@ -83,7 +83,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       double px = sin(angle) * radius;
       double py = cos(angle) * radius;
       VectorXd x = VectorXd(4);
-      x << px, py, 5, 0;
+      x << px, py, 0, 0;
       ekf_.setState(x);
     } else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
