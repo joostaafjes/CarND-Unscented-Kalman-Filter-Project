@@ -8,21 +8,51 @@ using Eigen::VectorXd;
 // Please note that the Eigen library does not initialize 
 // VectorXd or MatrixXd objects with zeros upon creation.
 
-KalmanFilter::KalmanFilter() {}
+KalmanFilter::KalmanFilter() {
+
+
+  // initializing matrices
+  R_laser_ = MatrixXd(2, 2);
+  R_radar_ = MatrixXd(3, 3);
+  H_ = MatrixXd(2, 4);
+
+  // measurement covariance matrix - laser
+  R_laser_ << 0.0225, 0,
+      0, 0.0225;
+
+  // measurement covariance matrix - radar
+  R_radar_ << 0.09, 0, 0,
+      0, 0.0009, 0,
+      0, 0, 0.09;
+
+  /**
+  TODO:
+    * Finish initializing the FusionEKF.
+    * Set the process and measurement noises
+  */
+  // state covariance matrix P
+  P_ = MatrixXd(4, 4);
+  P_ << 1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1000, 0,
+      0, 0, 0, 1000;
+
+  // measurement matrix
+  H_ << 1, 0, 0, 0,
+      0, 1, 0, 0;
+
+  // the initial transition matrix F_
+  F_ = MatrixXd(4, 4);
+  F_ << 1, 0, 1, 0,
+      0, 1, 0, 1,
+      0, 0, 1, 0,
+      0, 0, 0, 1;
+}
 
 KalmanFilter::~KalmanFilter() {}
 
 void KalmanFilter::setState(VectorXd &x_in) {
   x_ = x_in;
-}
-
-void KalmanFilter::Init(MatrixXd &P_in, MatrixXd &F_in,
-                        MatrixXd &H_in, MatrixXd &R_radar_in, Eigen::MatrixXd &R_lasar_in) {
-  P_ = P_in;
-  F_ = F_in;
-  H_ = H_in;
-  R_radar_ = R_radar_in;
-  R_lasar_ = R_lasar_in;
 }
 
 void KalmanFilter::Predict(float dt) {
@@ -57,7 +87,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   VectorXd z_pred = H_ * x_;
   VectorXd y = z - z_pred;
   MatrixXd Ht = H_.transpose();
-  MatrixXd S = H_ * P_ * Ht + R_lasar_;
+  MatrixXd S = H_ * P_ * Ht + R_laser_;
   MatrixXd Si = S.inverse();
   MatrixXd PHt = P_ * Ht;
   MatrixXd K = PHt * Si;

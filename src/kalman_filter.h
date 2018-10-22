@@ -22,7 +22,7 @@ public:
 
   // measurement covariance matrix
   Eigen::MatrixXd R_radar_;
-  Eigen::MatrixXd R_lasar_;
+  Eigen::MatrixXd R_laser_;
 
   /**
    * Constructor
@@ -47,8 +47,8 @@ public:
    * @param H_in Measurement matrix
    * @param R_in Measurement covariance matrix
    */
-  void Init(Eigen::MatrixXd &P_in, Eigen::MatrixXd &F_in,
-      Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_radar_in, Eigen::MatrixXd &R_lasar_in_);
+//  void Init(Eigen::MatrixXd &P_in, Eigen::MatrixXd &F_in,
+//      Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_radar_in, Eigen::MatrixXd &R_lasar_in_);
 
   /**
    * Prediction Predicts the state and the state covariance

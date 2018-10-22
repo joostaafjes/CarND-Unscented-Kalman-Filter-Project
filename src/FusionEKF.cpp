@@ -15,44 +15,6 @@ FusionEKF::FusionEKF() {
   is_initialized_ = false;
 
   previous_timestamp_ = 0;
-
-  // initializing matrices
-  R_laser_ = MatrixXd(2, 2);
-  R_radar_ = MatrixXd(3, 3);
-  H_laser_ = MatrixXd(2, 4);
-
-  // measurement covariance matrix - laser
-  R_laser_ << 0.0225, 0,
-      0, 0.0225;
-
-  // measurement covariance matrix - radar
-  R_radar_ << 0.09, 0, 0,
-      0, 0.0009, 0,
-      0, 0, 0.09;
-
-  /**
-  TODO:
-    * Finish initializing the FusionEKF.
-    * Set the process and measurement noises
-  */
-  // state covariance matrix P
-  P_lasar_ = MatrixXd(4, 4);
-  P_lasar_ << 1, 0, 0, 0,
-      0, 1, 0, 0,
-      0, 0, 1000, 0,
-      0, 0, 0, 1000;
-
-  // measurement matrix
-  H_laser_ << 1, 0, 0, 0,
-      0, 1, 0, 0;
-
-  // the initial transition matrix F_
-  F_lasar_ = MatrixXd(4, 4);
-  F_lasar_ << 1, 0, 1, 0,
-      0, 1, 0, 1,
-      0, 0, 1, 0,
-      0, 0, 0, 1;
-
 }
 
 /**
@@ -90,11 +52,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       Initialize state.
       */
       VectorXd x = VectorXd(4);
-      x << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 5, 0;
+      x << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
       ekf_.setState(x);
     }
-
-    ekf_.Init(P_lasar_, F_lasar_, H_laser_, R_radar_, R_laser_);
 
     // done initializing, no need to predict or update
     previous_timestamp_ = measurement_pack.timestamp_;
@@ -138,6 +98,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   }
 
   // print the output
-  cout << "x_ = " << ekf_.x_ << endl;
-  cout << "P_ = " << ekf_.P_ << endl;
+//  cout << "x_ = " << ekf_.x_ << endl;
+//  cout << "P_ = " << ekf_.P_ << endl;
 }
