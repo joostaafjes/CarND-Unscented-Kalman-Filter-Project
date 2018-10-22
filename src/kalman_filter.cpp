@@ -26,7 +26,6 @@ void KalmanFilter::Init(MatrixXd &P_in, MatrixXd &F_in,
 }
 
 void KalmanFilter::Predict(float dt) {
-  std::cout << "dt:" << dt <<std::endl;
   // 1. Modify the F matrix so that the time is integrated
   F_(0, 2) = dt;
   F_(1, 3) = dt;
@@ -46,13 +45,9 @@ void KalmanFilter::Predict(float dt) {
   /**
     * predict the state
   */
-  std::cout << "F:" << F_ <<std::endl;
-  std::cout << "x_(before):" << x_ <<std::endl;
   x_ = F_ * x_;
-  std::cout << "x_(after):" << x_ <<std::endl;
   MatrixXd Ft = F_.transpose();
   P_ = F_ * P_ * Ft + Q_;
-//  std::cout << x_;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
@@ -87,45 +82,24 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   double rho = sqrt(p_x * p_x + p_y * p_y);
   double vx = x_(2);
   double vy = x_(3);
-  std::cout << "Hj:" << Hj << std::endl;
-  std::cout << "p_x:" << p_x  << std::endl;
-  std::cout << "p_y:" << p_y  << std::endl;
-  std::cout << "rho:" << rho  << std::endl;
-  std::cout << "x_(0):" << x_(0) << std::endl;
 
-//  double phi = atan(p_y / p_x);
   double phi = atan2(p_y, p_x);
-  double phi2 = atan(p_y / p_x);
-  if (int(phi*1000) != int(phi2*1000)) {
-    std::cout << "phi(2):" << phi << "-" << phi2 << std::endl;
-  } else {
-    std::cout << "phi:" << phi << std::endl;
-  }
 
   VectorXd z_pred = VectorXd(3);
   z_pred << rho, phi, (p_x * vx + p_y * vy) / rho;
 
-  std::cout << "z:" << z << std::endl;
-  std::cout << "z_pred:" << z_pred << std::endl;
-
-  VectorXd z2 = z;
-
-  VectorXd y = z2 - z_pred;
-  std::cout << "y:" << y << std::endl;
+  VectorXd y = z - z_pred;
 
   NormalizeAngle(&y(1));
 
-  std::cout << "Hj:" << Hj << std::endl;
   MatrixXd Hj_t = Hj.transpose();
   MatrixXd S = Hj * P_ * Hj_t + R_radar_;
   MatrixXd Si = S.inverse();
   MatrixXd PHt = P_ * Hj_t;
   MatrixXd K = PHt * Si;
-  std::cout << "K:" << K << std::endl;
 
   // new estimate
   x_ = x_ + (K * y);
-  std::cout << "x:" << x_ << std::endl;
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * Hj) * P_;
@@ -138,7 +112,7 @@ Eigen::VectorXd KalmanFilter::ConvertCartesianToPolar(Eigen::VectorXd x) {
   double vx = x(2);
   double vy = x(3);
 
-  double phi = atan(p_y / p_x);
+  double phi = atan2(p_y, p_x);
 
   VectorXd z_pred = VectorXd(3);
   z_pred << rho, phi, (p_x * vx + p_y * vy) / rho;
