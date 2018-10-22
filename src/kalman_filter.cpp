@@ -8,9 +8,7 @@ using Eigen::VectorXd;
 // Please note that the Eigen library does not initialize 
 // VectorXd or MatrixXd objects with zeros upon creation.
 
-KalmanFilter::KalmanFilter() {
-
-
+KalmanFilter::KalmanFilter(KalmanFilterState *pKalmanFilterState) {
   // initializing matrices
   R_laser_ = MatrixXd(2, 2);
   R_radar_ = MatrixXd(3, 3);
@@ -30,12 +28,6 @@ KalmanFilter::KalmanFilter() {
     * Finish initializing the FusionEKF.
     * Set the process and measurement noises
   */
-  // state covariance matrix P
-  P_ = MatrixXd(4, 4);
-  P_ << 1, 0, 0, 0,
-      0, 1, 0, 0,
-      0, 0, 1000, 0,
-      0, 0, 0, 1000;
 
   // measurement matrix
   H_ << 1, 0, 0, 0,
@@ -47,15 +39,57 @@ KalmanFilter::KalmanFilter() {
       0, 1, 0, 1,
       0, 0, 1, 0,
       0, 0, 0, 1;
+
+  // set state pointer
+  kalmanFilterState = pKalmanFilterState;
 }
 
 KalmanFilter::~KalmanFilter() {}
 
-void KalmanFilter::setState(VectorXd &x_in) {
-  x_ = x_in;
+bool KalmanFilter::Init(const MeasurementPackage &measurement_pack) {
+  if (!kalmanFilterState->is_initialized_) {
+    /**
+    TODO:
+      * Initialize the state ekf_.x_ with the first measurement.
+      * Create the covariance matrix.
+      * Remember: you'll need to convert radar from polar to cartesian coordinates.
+    */
+    // first measurement
+    cout << "EKF: " << endl;
+
+    if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
+      /**
+      Convert radar from polar to cartesian coordinates and initialize state.
+      */
+      double radius = measurement_pack.raw_measurements_[0];
+      double angle = measurement_pack.raw_measurements_[1];
+      double px = sin(angle) * radius;
+      double py = cos(angle) * radius;
+      VectorXd x = VectorXd(4);
+      x << px, py, 0, 0;
+      kalmanFilterState->x_ = x;
+//      ekf_.setState(x);
+    } else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
+      /**
+      Initialize state.
+      */
+      VectorXd x = VectorXd(4);
+      x << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+      kalmanFilterState->x_ = x;
+//      ekf_.setState(x);
+    }
+
+    // done initializing, no need to predict or update
+    kalmanFilterState->previous_timestamp_ = measurement_pack.timestamp_;
+    kalmanFilterState->is_initialized_ = true;
+    return true;
+  }
+
+  return false;
 }
 
-void KalmanFilter::Predict(float dt) {
+void KalmanFilter::Predict() {
+  float dt = kalmanFilterState->dt;
   // 1. Modify the F matrix so that the time is integrated
   F_(0, 2) = dt;
   F_(1, 3) = dt;
@@ -75,28 +109,28 @@ void KalmanFilter::Predict(float dt) {
   /**
     * predict the state
   */
-  x_ = F_ * x_;
+  kalmanFilterState->x_ = F_ * kalmanFilterState->x_;
   MatrixXd Ft = F_.transpose();
-  P_ = F_ * P_ * Ft + Q_;
+  kalmanFilterState->P_ = F_ * kalmanFilterState->P_ * Ft + Q_;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
   /**
     * update the state by using Kalman Filter equations
   */
-  VectorXd z_pred = H_ * x_;
+  VectorXd z_pred = H_ * kalmanFilterState->x_;
   VectorXd y = z - z_pred;
   MatrixXd Ht = H_.transpose();
-  MatrixXd S = H_ * P_ * Ht + R_laser_;
+  MatrixXd S = H_ * kalmanFilterState->P_ * Ht + R_laser_;
   MatrixXd Si = S.inverse();
-  MatrixXd PHt = P_ * Ht;
+  MatrixXd PHt = kalmanFilterState->P_ * Ht;
   MatrixXd K = PHt * Si;
 
   // new estimate
-  x_ = x_ + (K * y);
-  long x_size = x_.size();
+  kalmanFilterState->x_ = kalmanFilterState->x_ + (K * y);
+  long x_size = kalmanFilterState->x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  P_ = (I - K * H_) * P_;
+  kalmanFilterState->P_ = (I - K * H_) * kalmanFilterState->P_;
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
@@ -105,23 +139,23 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     * update the state by using Extended Kalman Filter equations
   */
   Tools tools;
-  MatrixXd Hj = tools.CalculateJacobian(x_);
+  MatrixXd Hj = tools.CalculateJacobian(kalmanFilterState->x_);
 
-  VectorXd y = z - ConvertCartesianToPolar(x_);
+  VectorXd y = z - ConvertCartesianToPolar(kalmanFilterState->x_);
 
   NormalizeAngle(&y(1));
 
   MatrixXd Hj_t = Hj.transpose();
-  MatrixXd S = Hj * P_ * Hj_t + R_radar_;
+  MatrixXd S = Hj * kalmanFilterState->P_ * Hj_t + R_radar_;
   MatrixXd Si = S.inverse();
-  MatrixXd PHt = P_ * Hj_t;
+  MatrixXd PHt = kalmanFilterState->P_ * Hj_t;
   MatrixXd K = PHt * Si;
 
   // new estimate
-  x_ = x_ + (K * y);
-  long x_size = x_.size();
+  kalmanFilterState->x_ = kalmanFilterState->x_ + (K * y);
+  long x_size = kalmanFilterState->x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  P_ = (I - K * Hj) * P_;
+  kalmanFilterState->P_ = (I - K * Hj) * kalmanFilterState->P_;
 }
 
 Eigen::VectorXd KalmanFilter::ConvertCartesianToPolar(Eigen::VectorXd x) {

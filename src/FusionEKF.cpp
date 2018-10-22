@@ -12,55 +12,24 @@ using std::vector;
  * Constructor.
  */
 FusionEKF::FusionEKF() {
-  is_initialized_ = false;
-
-  previous_timestamp_ = 0;
+  pKalmanFilterState = new KalmanFilterState();
+  pEkf_ = new KalmanFilter(pKalmanFilterState);
 }
 
 /**
 * Destructor.
 */
-FusionEKF::~FusionEKF() {}
+FusionEKF::~FusionEKF() {
+  delete pKalmanFilterState;
+}
 
 void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /*****************************************************************************
    *  Initialization
    ****************************************************************************/
-  if (!is_initialized_) {
-    /**
-    TODO:
-      * Initialize the state ekf_.x_ with the first measurement.
-      * Create the covariance matrix.
-      * Remember: you'll need to convert radar from polar to cartesian coordinates.
-    */
-    // first measurement
-    cout << "EKF: " << endl;
-
-    if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      /**
-      Convert radar from polar to cartesian coordinates and initialize state.
-      */
-      double radius = measurement_pack.raw_measurements_[0];
-      double angle = measurement_pack.raw_measurements_[1];
-      double px = sin(angle) * radius;
-      double py = cos(angle) * radius;
-      VectorXd x = VectorXd(4);
-      x << px, py, 0, 0;
-      ekf_.setState(x);
-    } else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-      /**
-      Initialize state.
-      */
-      VectorXd x = VectorXd(4);
-      x << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
-      ekf_.setState(x);
-    }
-
-    // done initializing, no need to predict or update
-    previous_timestamp_ = measurement_pack.timestamp_;
-    is_initialized_ = true;
-    return;
-  }
+   if (pEkf_->Init(measurement_pack)) {
+     return;
+   }
 
   /*****************************************************************************
    *  Prediction
@@ -74,10 +43,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * Use noise_ax_ = 9 and noise_ay_ = 9 for your Q matrix.
    */
   // compute the time elapsed between the current and previous measurements
-  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;    // dt - expressed in seconds
-  previous_timestamp_ = measurement_pack.timestamp_;
+  pKalmanFilterState->UpdateDateTime(measurement_pack.timestamp_);
 
-  ekf_.Predict(dt);
+  pEkf_->Predict();
 
   /*****************************************************************************
    *  Update
@@ -91,10 +59,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
-    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+    pEkf_->UpdateEKF(measurement_pack.raw_measurements_);
   } else {
     // Laser updates
-    ekf_.Update(measurement_pack.raw_measurements_);
+    pEkf_->Update(measurement_pack.raw_measurements_);
   }
 
   // print the output

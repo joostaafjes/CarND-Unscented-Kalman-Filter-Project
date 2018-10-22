@@ -1,15 +1,11 @@
 #ifndef KALMAN_FILTER_H_
 #define KALMAN_FILTER_H_
 #include "Eigen/Dense"
+#include "measurement_package.h"
+#include "kalman_filter_state.h"
 
 class KalmanFilter {
 public:
-
-  // state vector
-  Eigen::VectorXd x_;
-
-  // state covariance matrix
-  Eigen::MatrixXd P_;
 
   // state transition matrix
   Eigen::MatrixXd F_;
@@ -28,17 +24,14 @@ public:
    * Constructor
    */
   KalmanFilter();
+  KalmanFilter(KalmanFilterState *pKalmanFilterState);
 
   /**
    * Destructor
    */
   virtual ~KalmanFilter();
 
-  /**
-   * Set state
-   * @param x_in Initial state
-   */
-  void setState(Eigen::VectorXd &x_in);
+  bool Init(const MeasurementPackage &measurementPack);
 
   /**
    * Init Initializes Kalman filter
@@ -55,7 +48,7 @@ public:
    * using the process model
    * @param delta_T Time between k and k+1 in s
    */
-  void Predict(float dt);
+  void Predict();
 
   /**
    * Updates the state by using standard Kalman Filter equations
@@ -71,6 +64,7 @@ public:
  private:
   Eigen::VectorXd ConvertCartesianToPolar(Eigen::VectorXd x);
   void NormalizeAngle(double* pangle);
+  KalmanFilterState *kalmanFilterState;
 
 };
 
