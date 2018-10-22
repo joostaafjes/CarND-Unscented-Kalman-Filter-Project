@@ -77,18 +77,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   Tools tools;
   MatrixXd Hj = tools.CalculateJacobian(x_);
 
-  double p_x = x_(0);
-  double p_y = x_(1);
-  double rho = sqrt(p_x * p_x + p_y * p_y);
-  double vx = x_(2);
-  double vy = x_(3);
-
-  double phi = atan2(p_y, p_x);
-
-  VectorXd z_pred = VectorXd(3);
-  z_pred << rho, phi, (p_x * vx + p_y * vy) / rho;
-
-  VectorXd y = z - z_pred;
+  VectorXd y = z - ConvertCartesianToPolar(x_);
 
   NormalizeAngle(&y(1));
 
