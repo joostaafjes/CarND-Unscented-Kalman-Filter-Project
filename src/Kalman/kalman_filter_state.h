@@ -5,7 +5,7 @@
 #ifndef EXTENDEDKF_KALMAN_FILTER_STATE_H
 #define EXTENDEDKF_KALMAN_FILTER_STATE_H
 
-#include "Eigen/Dense"
+#include "../Eigen/Dense"
 
 class KalmanFilterState {
  public:

@@ -1,7 +1,7 @@
 #ifndef VIRTUAL_KALMAN_FILTER_H_
 #define VIRTUAL_KALMAN_FILTER_H_
-#include "Eigen/Dense"
-#include "measurement_package.h"
+#include "../Eigen/Dense"
+#include "../measurement_package.h"
 #include "kalman_filter_state.h"
 
 class VirtualKalmanFilter {

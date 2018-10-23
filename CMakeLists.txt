@@ -11,10 +11,10 @@ set(sources
         src/main.cpp
         src/tools.cpp src/tools.h
         src/fusion_ekf.cpp src/fusion_ekf.h
-        src/kalman_filter_state.cpp src/kalman_filter_state.h
-        src/virtual_kalman_filter.h src/virtual_kalman_filter.cpp
-        src/standard_kalman_filter.cpp src/standard_kalman_filter.h
-        src/extended_kalman_filter.h src/extended_kalman_filter.cpp
+        src/Kalman/kalman_filter_state.cpp src/Kalman/kalman_filter_state.h
+        src/Kalman/virtual_kalman_filter.h src/Kalman/virtual_kalman_filter.cpp
+        src/Kalman/standard_kalman_filter.cpp src/Kalman/standard_kalman_filter.h
+        src/Kalman/extended_kalman_filter.h src/Kalman/extended_kalman_filter.cpp
         )
 
 

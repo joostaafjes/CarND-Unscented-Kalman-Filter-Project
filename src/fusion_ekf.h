@@ -7,10 +7,10 @@
 #include <string>
 #include <fstream>
 #include <list>
-#include "standard_kalman_filter.h"
-#include "extended_kalman_filter.h"
+#include "Kalman/standard_kalman_filter.h"
+#include "Kalman/extended_kalman_filter.h"
 #include "tools.h"
-#include "kalman_filter_state.h"
+#include "Kalman/kalman_filter_state.h"
 
 class FusionEKF {
 public:
