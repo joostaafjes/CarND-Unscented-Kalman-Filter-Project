@@ -20,6 +20,11 @@ KalmanFilterState::KalmanFilterState() {
   previous_timestamp_ = 0;
 }
 
+void KalmanFilterState::Init(long long timestamp) {
+  previous_timestamp_ = timestamp;
+  is_initialized_ = true;
+}
+
 void KalmanFilterState::UpdateDateTime(long long timestamp) {
   dt = (timestamp - previous_timestamp_) / 1000000.0;    // dt - expressed in seconds
   previous_timestamp_ = timestamp;

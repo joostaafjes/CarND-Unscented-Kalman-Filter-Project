@@ -28,6 +28,9 @@ FusionEKF::~FusionEKF() {
 
 void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   for (auto filter = kalmanFilterList.begin(); filter != kalmanFilterList.end(); ++filter) {
+    /*
+     * Match sensor type
+     */
     if ((*filter)->supportedSensorType == measurement_pack.sensor_type_) {
       /*****************************************************************************
        *  Initialization
@@ -35,6 +38,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       if ((*filter)->Init(measurement_pack)) {
         return;
       }
+
+      /*
+       * Compute the time elapsed between the current and previous measurements
+       */
+      pKalmanFilterState->UpdateDateTime(measurement_pack.timestamp_);
 
       /*****************************************************************************
        *  Prediction:
@@ -44,9 +52,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
        * Update the process noise covariance matrix.
        * Use noise_ax_ = 9 and noise_ay_ = 9 for your Q matrix.
        ****************************************************************************/
-      // compute the time elapsed between the current and previous measurements
-      pKalmanFilterState->UpdateDateTime(measurement_pack.timestamp_);
-
       (*filter)->Predict();
 
       /*****************************************************************************

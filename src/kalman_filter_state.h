@@ -26,6 +26,8 @@ class KalmanFilterState {
 
   float dt;
 
+  void Init(long long timestamp);
+
   void UpdateDateTime(long long timestamp);
 };
 

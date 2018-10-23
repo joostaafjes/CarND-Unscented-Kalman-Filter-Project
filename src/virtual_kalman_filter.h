@@ -5,7 +5,7 @@
 #include "kalman_filter_state.h"
 
 class VirtualKalmanFilter {
-public:
+ public:
 
   // state transition matrix
   Eigen::MatrixXd F_;
@@ -29,6 +29,9 @@ public:
    */
   virtual ~VirtualKalmanFilter();
 
+  /**
+   * Initialize the state x_ with the first measurement.
+   */
   virtual bool Init(const MeasurementPackage &measurementPack) = 0;
 
   /**
@@ -47,6 +50,9 @@ public:
   SensorType supportedSensorType;
 
   KalmanFilterState *kalmanFilterState;
+ private:
+  float noise_ax_;
+  float noise_ay_;
 };
 
 #endif /* VIRTUAL_KALMAN_FILTER_H_ */

@@ -20,25 +20,15 @@ StandardKalmanFilter::StandardKalmanFilter(KalmanFilterState *pKalmanFilterState
 
 StandardKalmanFilter::~StandardKalmanFilter() {}
 
+/*
+ * Initialize the state x_ with the first measurement.
+ */
 bool StandardKalmanFilter::Init(const MeasurementPackage &measurement_pack) {
   if (!kalmanFilterState->is_initialized_) {
-    /**
-    TODO:
-      * Initialize the state ekf_.x_ with the first measurement.
-      * Create the covariance matrix.
-      * Remember: you'll need to convert radar from polar to cartesian coordinates.
-    */
-    // first measurement
-    cout << "EKF: " << endl;
-
-    /**
-    Initialize state.
-    */
     kalmanFilterState->x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
 
     // done initializing, no need to predict or update
-    kalmanFilterState->previous_timestamp_ = measurement_pack.timestamp_;
-    kalmanFilterState->is_initialized_ = true;
+    kalmanFilterState->Init(measurement_pack.timestamp_);
     return true;
   }
 
