@@ -5,10 +5,16 @@ In this project you will utilize a kalman filter to estimate the state of a movi
 
 ## Results and analysis
 
-
+The figure below shows the sum of the Root Mean Square Error (RMSE) for x and y during the time for laser, radar and combined. The following can be seen:
+1. Laser performs better than radar (expected behaviour)
+2. Combining both measurements results in best performance.
 
 [figure1]: ./data/output/RMSExy.png
 ![RMSE x + RMSE y][figure1]
+
+The figure below shows the sum of the Root Mean Square Error (RMSE) for v x and v y during the time for laser, radar and combined. The following can be seen:
+1. Laser performs better than radar (this is unexpected, I would expect that radar would be better)
+2. Combining both measurements results in best performance.
 
 [figure2]: ./data/output/RMSEvxvy.png
 ![RMSE vx + RMSE vy][figure2]
