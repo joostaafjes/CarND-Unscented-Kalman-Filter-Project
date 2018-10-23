@@ -1,12 +1,14 @@
-#ifndef FusionEKF_H_
-#define FusionEKF_H_
+#ifndef FUSION_EKF_H
+#define FUSION_EKF_H
 
 #include "measurement_package.h"
 #include "Eigen/Dense"
 #include <vector>
 #include <string>
 #include <fstream>
-#include "kalman_filter.h"
+#include <list>
+#include "standard_kalman_filter.h"
+#include "extended_kalman_filter.h"
 #include "tools.h"
 #include "kalman_filter_state.h"
 
@@ -30,17 +32,16 @@ public:
   /**
   * Kalman Filter update and prediction math lives in here.
   */
-  KalmanFilter *pEkf_;
+  StandardKalmanFilter *pEkf_;
 
   KalmanFilterState *pKalmanFilterState;
 
 private:
-
   // tool object used to compute Jacobian and RMSE
   Tools tools;
 
-
+  std::list<VirtualKalmanFilter*> kalmanFilterList;
 
 };
 
-#endif /* FusionEKF_H_ */
+#endif // FUSION_EKF_H

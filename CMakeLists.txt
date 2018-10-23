@@ -7,7 +7,15 @@ add_definitions(-std=c++11)
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 
-set(sources src/main.cpp src/tools.cpp src/fusion_ekf.cpp src/kalman_filter.cpp src/tools.h src/fusion_ekf.h src/kalman_filter.h src/kalman_filter_state.cpp src/kalman_filter_state.h)
+set(sources
+        src/main.cpp
+        src/tools.cpp src/tools.h
+        src/fusion_ekf.cpp src/fusion_ekf.h
+        src/kalman_filter_state.cpp src/kalman_filter_state.h
+        src/virtual_kalman_filter.h src/virtual_kalman_filter.cpp
+        src/standard_kalman_filter.cpp src/standard_kalman_filter.h
+        src/extended_kalman_filter.h src/extended_kalman_filter.cpp
+        )
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 

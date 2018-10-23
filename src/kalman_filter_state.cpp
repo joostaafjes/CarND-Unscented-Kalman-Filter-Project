@@ -13,13 +13,14 @@ KalmanFilterState::KalmanFilterState() {
       0, 0, 1000, 0,
       0, 0, 0, 1000;
 
+  x_ = Eigen::VectorXd(4);
+
   is_initialized_ = false;
 
   previous_timestamp_ = 0;
 }
 
 void KalmanFilterState::UpdateDateTime(long long timestamp) {
-
-    dt = (timestamp - previous_timestamp_) / 1000000.0;    // dt - expressed in seconds
-    previous_timestamp_ = timestamp;
-  }
+  dt = (timestamp - previous_timestamp_) / 1000000.0;    // dt - expressed in seconds
+  previous_timestamp_ = timestamp;
+}
