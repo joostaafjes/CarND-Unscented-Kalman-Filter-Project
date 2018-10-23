@@ -13,13 +13,13 @@
 
 class ExtendedKalmanFilter: public VirtualKalmanFilter {
  public:
-  ExtendedKalmanFilter(KalmanFilterState *pKalmanFilterState, SensorType supportedSensorType);
+  ExtendedKalmanFilter(KalmanFilterState *kalman_filter_state, SensorType supported_sensor_type);
 
-  bool Init(const MeasurementPackage &measurementPack);
+  bool Init(const MeasurementPackage &measurement_pack);
   void Update(const Eigen::VectorXd &z);
  private:
   Eigen::VectorXd ConvertCartesianToPolar(Eigen::VectorXd x);
-  void NormalizeAngle(double* pangle);
+  void NormalizeAngle(double* angle);
 };
 
 #endif //EXTENDED_KALMAN_FILTER_H

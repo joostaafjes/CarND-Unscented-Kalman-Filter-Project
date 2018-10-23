@@ -22,7 +22,7 @@ class VirtualKalmanFilter {
   /**
    * Constructor
    */
-  VirtualKalmanFilter(KalmanFilterState *pKalmanFilterState, SensorType supportedSensorType);
+  VirtualKalmanFilter(KalmanFilterState *kalman_filter_state, SensorType supported_sensor_type);
 
   /**
    * Destructor
@@ -32,7 +32,7 @@ class VirtualKalmanFilter {
   /**
    * Initialize the state x_ with the first measurement.
    */
-  virtual bool Init(const MeasurementPackage &measurementPack) = 0;
+  virtual bool Init(const MeasurementPackage &measurement_pack) = 0;
 
   /**
    * Prediction Predicts the state and the state covariance
@@ -47,9 +47,9 @@ class VirtualKalmanFilter {
    */
   virtual void Update(const Eigen::VectorXd &z) = 0;
 
-  SensorType supportedSensorType;
+  SensorType supported_sensor_type_;
 
-  KalmanFilterState *kalmanFilterState;
+  KalmanFilterState *kalman_filter_state_;
  private:
   float noise_ax_;
   float noise_ay_;

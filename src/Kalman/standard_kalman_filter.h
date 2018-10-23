@@ -10,7 +10,7 @@ public:
   /**
    * Constructor
    */
-  StandardKalmanFilter(KalmanFilterState *pKalmanFilterState, SensorType supportedSensorType);
+  StandardKalmanFilter(KalmanFilterState *kalman_filter_state, SensorType supported_sensor_type);
 
   /**
    * Destructor

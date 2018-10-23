@@ -8,8 +8,8 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-ExtendedKalmanFilter::ExtendedKalmanFilter(KalmanFilterState *pKalmanFilterState, SensorType supported_sensor_type)
-    : VirtualKalmanFilter(pKalmanFilterState, supported_sensor_type) {
+ExtendedKalmanFilter::ExtendedKalmanFilter(KalmanFilterState *kalman_filter_state, SensorType supported_sensor_type)
+    : VirtualKalmanFilter(kalman_filter_state, supported_sensor_type) {
   /*
    * measurement covariance matrix - radar
    */
@@ -23,7 +23,7 @@ ExtendedKalmanFilter::ExtendedKalmanFilter(KalmanFilterState *pKalmanFilterState
   * Initialize the state x_ with the first measurement.
 */
 bool ExtendedKalmanFilter::Init(const MeasurementPackage &measurement_pack) {
-  if (!kalmanFilterState->is_initialized_) {
+  if (!kalman_filter_state_->is_initialized_) {
     /**
     Convert radar from polar to cartesian coordinates and initialize state.
     */
@@ -31,10 +31,10 @@ bool ExtendedKalmanFilter::Init(const MeasurementPackage &measurement_pack) {
     double angle = measurement_pack.raw_measurements_[1];
     double px = cos(angle) * radius;
     double py = sin(angle) * radius;
-    kalmanFilterState->x_ << px, py, 0, 0;
+    kalman_filter_state_->x_ << px, py, 0, 0;
 
     // done initializing, no need to predict or update
-    kalmanFilterState->Init(measurement_pack.timestamp_);
+    kalman_filter_state_->Init(measurement_pack.timestamp_);
     return true;
   }
 
@@ -46,23 +46,23 @@ void ExtendedKalmanFilter::Update(const VectorXd &z) {
     * update the state by using Extended Kalman Filter equations
     */
   Tools tools;
-  MatrixXd Hj = tools.CalculateJacobian(kalmanFilterState->x_);
+  MatrixXd Hj = tools.CalculateJacobian(kalman_filter_state_->x_);
 
-  VectorXd y = z - ConvertCartesianToPolar(kalmanFilterState->x_);
+  VectorXd y = z - ConvertCartesianToPolar(kalman_filter_state_->x_);
 
   NormalizeAngle(&y(1));
 
   MatrixXd Hj_t = Hj.transpose();
-  MatrixXd S = Hj * kalmanFilterState->P_ * Hj_t + R_;
+  MatrixXd S = Hj * kalman_filter_state_->P_ * Hj_t + R_;
   MatrixXd Si = S.inverse();
-  MatrixXd PHt = kalmanFilterState->P_ * Hj_t;
+  MatrixXd PHt = kalman_filter_state_->P_ * Hj_t;
   MatrixXd K = PHt * Si;
 
   // new estimate
-  kalmanFilterState->x_ = kalmanFilterState->x_ + (K * y);
-  long x_size = kalmanFilterState->x_.size();
+  kalman_filter_state_->x_ = kalman_filter_state_->x_ + (K * y);
+  long x_size = kalman_filter_state_->x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  kalmanFilterState->P_ = (I - K * Hj) * kalmanFilterState->P_;
+  kalman_filter_state_->P_ = (I - K * Hj) * kalman_filter_state_->P_;
 }
 
 Eigen::VectorXd ExtendedKalmanFilter::ConvertCartesianToPolar(Eigen::VectorXd x) {
@@ -80,13 +80,13 @@ Eigen::VectorXd ExtendedKalmanFilter::ConvertCartesianToPolar(Eigen::VectorXd x)
   return z_pred;
 }
 
-void ExtendedKalmanFilter::NormalizeAngle(double *pangle) {
-  while (*pangle > M_PI) {
-    std::cout << "phi updated(-):" << *pangle << std::endl;
-    *pangle -= 2 * M_PI;
+void ExtendedKalmanFilter::NormalizeAngle(double *angle) {
+  while (*angle > M_PI) {
+    std::cout << "phi updated(-):" << *angle << std::endl;
+    *angle -= 2 * M_PI;
   }
-  while (*pangle < -M_PI) {
-    std::cout << "phi updated(+):" << *pangle << std::endl;
-    *pangle += 2 * M_PI;
+  while (*angle < -M_PI) {
+    std::cout << "phi updated(+):" << *angle << std::endl;
+    *angle += 2 * M_PI;
   }
 }

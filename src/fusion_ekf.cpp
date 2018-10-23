@@ -12,26 +12,26 @@ using std::vector;
  * Constructor.
  */
 FusionEKF::FusionEKF() {
-  pKalmanFilterState = new KalmanFilterState();
-  VirtualKalmanFilter* standardKalmanFilter = new StandardKalmanFilter(pKalmanFilterState, SensorType::LASER);
-  VirtualKalmanFilter* extendedKalmanFilter = new ExtendedKalmanFilter(pKalmanFilterState, SensorType::RADAR);
-  kalmanFilterList.push_front(standardKalmanFilter);
-  kalmanFilterList.push_front(extendedKalmanFilter);
+  kalman_filter_state_ = new KalmanFilterState();
+  VirtualKalmanFilter* standard_kalman_filter = new StandardKalmanFilter(kalman_filter_state_, SensorType::LASER);
+  VirtualKalmanFilter* extended_kalman_filter = new ExtendedKalmanFilter(kalman_filter_state_, SensorType::RADAR);
+  kalman_filter_list_.push_front(standard_kalman_filter);
+  kalman_filter_list_.push_front(extended_kalman_filter);
 }
 
 /**
 * Destructor.
 */
 FusionEKF::~FusionEKF() {
-  delete pKalmanFilterState;
+  delete kalman_filter_state_;
 }
 
 void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
-  for (auto filter = kalmanFilterList.begin(); filter != kalmanFilterList.end(); ++filter) {
+  for (auto filter = kalman_filter_list_.begin(); filter != kalman_filter_list_.end(); ++filter) {
     /*
      * Match sensor type
      */
-    if ((*filter)->supportedSensorType == measurement_pack.sensor_type_) {
+    if ((*filter)->supported_sensor_type_ == measurement_pack.sensor_type_) {
       /*****************************************************************************
        *  Initialization
        ****************************************************************************/
@@ -42,7 +42,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /*
        * Compute the time elapsed between the current and previous measurements
        */
-      pKalmanFilterState->UpdateDateTime(measurement_pack.timestamp_);
+      kalman_filter_state_->UpdateDateTime(measurement_pack.timestamp_);
 
       /*****************************************************************************
        *  Prediction:

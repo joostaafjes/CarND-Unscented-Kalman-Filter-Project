@@ -34,13 +34,13 @@ public:
   */
   StandardKalmanFilter *pEkf_;
 
-  KalmanFilterState *pKalmanFilterState;
+  KalmanFilterState *kalman_filter_state_;
 
 private:
   // tool object used to compute Jacobian and RMSE
   Tools tools;
 
-  std::list<VirtualKalmanFilter*> kalmanFilterList;
+  std::list<VirtualKalmanFilter*> kalman_filter_list_;
 
 };
 
