@@ -1,6 +1,6 @@
 #include <iostream>
 #include "standard_kalman_filter.h"
-#include "../tools.h"
+#include "../../tools.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -17,8 +17,6 @@ StandardKalmanFilter::StandardKalmanFilter(KalmanFilterState *kalman_filter_stat
   R_ << 0.0225, 0,
       0, 0.0225;
 }
-
-StandardKalmanFilter::~StandardKalmanFilter() {}
 
 /*
  * Initialize the state x_ with the first measurement.

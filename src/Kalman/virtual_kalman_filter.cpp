@@ -1,5 +1,5 @@
 #include <iostream>
-#include "standard_kalman_filter.h"
+#include "Standard/standard_kalman_filter.h"
 #include "../tools.h"
 
 using Eigen::MatrixXd;
@@ -33,8 +33,6 @@ VirtualKalmanFilter::VirtualKalmanFilter(KalmanFilterState *kalman_filter_state,
   // set supported sensor type
   supported_sensor_type_ = supported_sensor_type;
 }
-
-VirtualKalmanFilter::~VirtualKalmanFilter() {}
 
 void VirtualKalmanFilter::Predict() {
   float dt = kalman_filter_state_->dt;

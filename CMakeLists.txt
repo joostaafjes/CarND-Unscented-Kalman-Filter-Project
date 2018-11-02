@@ -1,4 +1,4 @@
-project(ExtendedKF)
+project(UnscentedKF)
 
 cmake_minimum_required (VERSION 3.5)
 
@@ -13,9 +13,9 @@ set(sources
         src/fusion_ekf.cpp src/fusion_ekf.h
         src/Kalman/kalman_filter_state.cpp src/Kalman/kalman_filter_state.h
         src/Kalman/virtual_kalman_filter.h src/Kalman/virtual_kalman_filter.cpp
-        src/Kalman/standard_kalman_filter.cpp src/Kalman/standard_kalman_filter.h
-        src/Kalman/extended_kalman_filter.h src/Kalman/extended_kalman_filter.cpp
-        )
+        src/Kalman/Standard/standard_kalman_filter.cpp src/Kalman/Standard/standard_kalman_filter.h
+        src/Kalman/Extended/extended_kalman_filter.h src/Kalman/Extended/extended_kalman_filter.cpp
+        src/Kalman/Unscented/unscented_kalman_filter.cpp src/Kalman/Unscented/unscented_kalman_filter.h)
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
@@ -29,6 +29,6 @@ link_directories(/usr/local/Cellar/libuv/1*/lib)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
 
 
-add_executable(ExtendedKF ${sources})
+add_executable(UnscentedKF ${sources})
 
-target_link_libraries(ExtendedKF z ssl uv uWS)
+target_link_libraries(UnscentedKF z ssl uv uWS)

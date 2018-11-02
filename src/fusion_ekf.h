@@ -7,8 +7,8 @@
 #include <string>
 #include <fstream>
 #include <list>
-#include "Kalman/standard_kalman_filter.h"
-#include "Kalman/extended_kalman_filter.h"
+#include "Kalman/Standard/standard_kalman_filter.h"
+#include "Kalman/Extended/extended_kalman_filter.h"
 #include "tools.h"
 #include "Kalman/kalman_filter_state.h"
 
