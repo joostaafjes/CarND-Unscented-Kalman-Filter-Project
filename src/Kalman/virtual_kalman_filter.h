@@ -27,7 +27,7 @@ class VirtualKalmanFilter {
   /**
    * Destructor
    */
-  virtual ~VirtualKalmanFilter();
+  virtual ~VirtualKalmanFilter() = default;
 
   /**
    * Initialize the state x_ with the first measurement.

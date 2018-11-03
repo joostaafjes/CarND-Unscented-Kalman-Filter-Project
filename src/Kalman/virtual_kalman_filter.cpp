@@ -36,6 +36,7 @@ VirtualKalmanFilter::VirtualKalmanFilter(KalmanFilterState *kalman_filter_state,
 
 void VirtualKalmanFilter::Predict() {
   float dt = kalman_filter_state_->dt;
+
   // Modify the F matrix so that the time is integrated
   F_(0, 2) = dt;
   F_(1, 3) = dt;
