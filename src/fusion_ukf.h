@@ -7,22 +7,23 @@
 #include <string>
 #include <fstream>
 #include <list>
-#include "Kalman/Standard/standard_kalman_filter.h"
-#include "Kalman/Extended/extended_kalman_filter.h"
+#include "Kalman/unscented_kalman_filter.h"
+#include "Kalman/Lidar/lidar_kalman_filter.h"
+#include "Kalman/Radar/radar_kalman_filter.h"
 #include "tools.h"
 #include "Kalman/kalman_filter_state.h"
 
-class FusionEKF {
+class FusionUKF {
 public:
   /**
   * Constructor.
   */
-  FusionEKF();
+  FusionUKF();
 
   /**
   * Destructor.
   */
-  virtual ~FusionEKF();
+  virtual ~FusionUKF();
 
   /**
   * Run the whole flow of the Kalman Filter from here.
@@ -32,7 +33,7 @@ public:
   /**
   * Kalman Filter update and prediction math lives in here.
   */
-  StandardKalmanFilter *pEkf_;
+  UnscentedKalmanFilter *pEkf_;
 
   KalmanFilterState *kalman_filter_state_;
 
@@ -40,7 +41,7 @@ private:
   // tool object used to compute Jacobian and RMSE
   Tools tools;
 
-  std::list<VirtualKalmanFilter*> kalman_filter_list_;
+  std::list<UnscentedKalmanFilter*> kalman_filter_list_;
 
 };
 

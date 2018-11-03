@@ -1,4 +1,4 @@
-#include "fusion_ekf.h"
+#include "fusion_ukf.h"
 #include "tools.h"
 #include "Eigen/Dense"
 #include <iostream>
@@ -11,22 +11,24 @@ using std::vector;
 /*
  * Constructor.
  */
-FusionEKF::FusionEKF() {
+FusionUKF::FusionUKF() {
   kalman_filter_state_ = new KalmanFilterState();
-  VirtualKalmanFilter* standard_kalman_filter = new StandardKalmanFilter(kalman_filter_state_, SensorType::LASER);
-  VirtualKalmanFilter* extended_kalman_filter = new ExtendedKalmanFilter(kalman_filter_state_, SensorType::RADAR);
+
+  UnscentedKalmanFilter* standard_kalman_filter = new LidarKalmanFilter(kalman_filter_state_, SensorType::LASER);
   kalman_filter_list_.push_front(standard_kalman_filter);
-  kalman_filter_list_.push_front(extended_kalman_filter);
+
+  UnscentedKalmanFilter* unscented_kalman_filter = new RadarKalmanFilter(kalman_filter_state_, SensorType::RADAR);
+  kalman_filter_list_.push_front(unscented_kalman_filter);
 }
 
 /**
 * Destructor.
 */
-FusionEKF::~FusionEKF() {
+FusionUKF::~FusionUKF() {
   delete kalman_filter_state_;
 }
 
-void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
+void FusionUKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   for (auto filter = kalman_filter_list_.begin(); filter != kalman_filter_list_.end(); ++filter) {
     /*
      * Match sensor type

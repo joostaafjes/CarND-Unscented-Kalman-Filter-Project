@@ -10,12 +10,11 @@ set(CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 set(sources
         src/main.cpp
         src/tools.cpp src/tools.h
-        src/fusion_ekf.cpp src/fusion_ekf.h
+        src/fusion_ukf.cpp src/fusion_ukf.h
         src/Kalman/kalman_filter_state.cpp src/Kalman/kalman_filter_state.h
-        src/Kalman/virtual_kalman_filter.h src/Kalman/virtual_kalman_filter.cpp
-        src/Kalman/Standard/standard_kalman_filter.cpp src/Kalman/Standard/standard_kalman_filter.h
-        src/Kalman/Extended/extended_kalman_filter.h src/Kalman/Extended/extended_kalman_filter.cpp
-        src/Kalman/Unscented/unscented_kalman_filter.cpp src/Kalman/Unscented/unscented_kalman_filter.h)
+        src/Kalman/unscented_kalman_filter.h src/Kalman/unscented_kalman_filter.cpp
+        src/Kalman/Lidar/lidar_kalman_filter.cpp src/Kalman/Lidar/lidar_kalman_filter.h
+        src/Kalman/Radar/radar_kalman_filter.cpp src/Kalman/Radar/radar_kalman_filter.h)
 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 

@@ -7,13 +7,14 @@
 KalmanFilterState::KalmanFilterState() {
 
   // state covariance matrix P
-  P_ = Eigen::MatrixXd(4, 4);
-  P_ << 1, 0, 0, 0,
-      0, 1, 0, 0,
-      0, 0, 1000, 0,
-      0, 0, 0, 1000;
+  P_ = Eigen::MatrixXd(5, 5);
+//  P_ << 1, 0, 0, 0,
+//      0, 1, 0, 0,
+//      0, 0, 1000, 0,
+//      0, 0, 0, 1000;
+  P_ << Eigen::MatrixXd::Identity(5, 5);
 
-  x_ = Eigen::VectorXd(4);
+  x_ = Eigen::VectorXd(5);
 
   is_initialized_ = false;
 

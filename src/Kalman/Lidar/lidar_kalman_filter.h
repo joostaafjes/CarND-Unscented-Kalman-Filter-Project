@@ -4,14 +4,14 @@
 #include "../../Eigen/Dense"
 #include "../../measurement_package.h"
 #include "../kalman_filter_state.h"
-#include "../virtual_kalman_filter.h"
+#include "../unscented_kalman_filter.h"
 
-class StandardKalmanFilter: public VirtualKalmanFilter {
+class LidarKalmanFilter: public UnscentedKalmanFilter {
 public:
   /**
    * Constructor
    */
-  StandardKalmanFilter(KalmanFilterState *kalman_filter_state, SensorType supported_sensor_type);
+  LidarKalmanFilter(KalmanFilterState *kalman_filter_state, SensorType supported_sensor_type);
 
   bool Init(const MeasurementPackage &measurementPack) override;
 
@@ -20,6 +20,10 @@ public:
    * @param z The measurement at k+1
    */
   void Update(const Eigen::VectorXd &z) override;
+ private:
+  // measurement matrix
+  Eigen::MatrixXd H_; // only for lidar
+
 };
 
 #endif /* KALMAN_FILTER_H_ */

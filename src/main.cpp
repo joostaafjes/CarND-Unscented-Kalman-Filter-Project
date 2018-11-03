@@ -2,7 +2,7 @@
 #include <iostream>
 #include "json.hpp"
 #include <math.h>
-#include "fusion_ekf.h"
+#include "fusion_ukf.h"
 #include "tools.h"
 
 using namespace std;
@@ -29,7 +29,7 @@ int main() {
   uWS::Hub h;
 
   // Create a Kalman Filter instance
-  FusionEKF fusionEKF;
+  FusionUKF fusionEKF;
 
   // used to compute the RMSE later
   Tools tools;

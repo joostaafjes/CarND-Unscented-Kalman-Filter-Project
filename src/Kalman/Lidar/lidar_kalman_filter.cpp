@@ -1,5 +1,5 @@
 #include <iostream>
-#include "standard_kalman_filter.h"
+#include "lidar_kalman_filter.h"
 #include "../../tools.h"
 
 using Eigen::MatrixXd;
@@ -8,22 +8,28 @@ using Eigen::VectorXd;
 // Please note that the Eigen library does not initialize 
 // VectorXd or MatrixXd objects with zeros upon creation.
 
-StandardKalmanFilter::StandardKalmanFilter(KalmanFilterState *kalman_filter_state, SensorType supported_sensor_type)
-    : VirtualKalmanFilter(kalman_filter_state, supported_sensor_type) {
+LidarKalmanFilter::LidarKalmanFilter(KalmanFilterState *kalman_filter_state, SensorType supported_sensor_type)
+    : UnscentedKalmanFilter(kalman_filter_state, supported_sensor_type) {
   // initializing matrices
   R_ = MatrixXd(2, 2);
 
   // measurement covariance matrix - laser
   R_ << 0.0225, 0,
       0, 0.0225;
+
+  // measurement matrix
+  H_ = MatrixXd(2, 5);
+  H_ << 1, 0, 0, 0, 0,
+      0, 1, 0, 0, 0;
+
 }
 
 /*
  * Initialize the state x_ with the first measurement.
  */
-bool StandardKalmanFilter::Init(const MeasurementPackage &measurement_pack) {
+bool LidarKalmanFilter::Init(const MeasurementPackage &measurement_pack) {
   if (!kalman_filter_state_->is_initialized_) {
-    kalman_filter_state_->x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+    kalman_filter_state_->x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0, 0;
 
     // done initializing, no need to predict or update
     kalman_filter_state_->Init(measurement_pack.timestamp_);
@@ -33,7 +39,7 @@ bool StandardKalmanFilter::Init(const MeasurementPackage &measurement_pack) {
   return false;
 }
 
-void StandardKalmanFilter::Update(const VectorXd &z) {
+void LidarKalmanFilter::Update(const VectorXd &z) {
   /**
     * update the state by using Kalman Filter equations
   */
