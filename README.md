@@ -1,20 +1,16 @@
 # Unscented Kalman Filter Project
 Self-Driving Car Engineer Nanodegree Program
 
-In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower than the tolerance outlined in the project rubric. 
+In this project you will utilize an unscented kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower than the tolerance outlined in the project rubric. 
 
 ## Results and analysis
 
-The figure below shows the sum of the Root Mean Square Error (RMSE) for x and y during the time for laser, radar and combined. The following can be seen:
-1. Laser performs better than radar (expected behaviour)
-2. Combining both measurements results in best performance.
+The figures below shows the sum of the Root Mean Square Error (RMSE) for x and y and the RMSE sum vx and vy during the time for laser, radar and combined. The following can be seen:
+1. 
 
 [figure1]: ./data/output/RMSExy.png
 ![RMSE x + RMSE y][figure1]
 
-The figure below shows the sum of the Root Mean Square Error (RMSE) for v x and v y during the time for laser, radar and combined. The following can be seen:
-1. Laser performs better than radar (this is unexpected, I would expect that radar would be better)
-2. Combining both measurements results in best performance.
 
 [figure2]: ./data/output/RMSEvxvy.png
 ![RMSE vx + RMSE vy][figure2]
