@@ -114,8 +114,12 @@ int main() {
 
           double p_x = fusionEKF.kalman_filter_state_->x_(0);
           double p_y = fusionEKF.kalman_filter_state_->x_(1);
-          double v1 = fusionEKF.kalman_filter_state_->x_(2);
-          double v2 = fusionEKF.kalman_filter_state_->x_(3);
+          double v = fusionEKF.kalman_filter_state_->x_(2);
+          double yaw = fusionEKF.kalman_filter_state_->x_(3);
+          double yaw_dot = fusionEKF.kalman_filter_state_->x_(3);
+
+          double v1 = cos(yaw)*v;
+          double v2 = sin(yaw)*v;
 
           estimate(0) = p_x;
           estimate(1) = p_y;
