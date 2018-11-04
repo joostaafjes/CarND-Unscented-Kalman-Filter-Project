@@ -1,12 +1,13 @@
 # Unscented Kalman Filter Project
 Self-Driving Car Engineer Nanodegree Program
 
-In this project you will utilize an unscented kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower than the tolerance outlined in the project rubric. 
+In this project you will utilize an Unscented Kalman Filter (UKF) to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower than the tolerance outlined in the project rubric. 
 
 ## Results and analysis
 
 The figures below shows the sum of the Root Mean Square Error (RMSE) for x and y and the RMSE sum vx and vy during the time for laser, radar and combined. The following can be seen:
-1. 
+1. UKF performes in all cases better (or at leat similair) than standard and Extended Kalman Filter
+2. The combination of Laser and Radar with UKF performes best for both x, y, vx and vy. 
 
 [figure1]: ./data/output/RMSExy.png
 ![RMSE x + RMSE y][figure1]
